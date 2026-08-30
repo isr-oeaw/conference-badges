@@ -1,10 +1,8 @@
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
-import { fileURLToPath } from 'url';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const testRoot = path.join(os.tmpdir(), 'conference-badges-test');
+const testRoot = path.join(os.tmpdir(), `conference-badges-test-${process.pid}`);
 
 process.env.NODE_ENV = 'test';
 process.env.DATA_DIR = testRoot;

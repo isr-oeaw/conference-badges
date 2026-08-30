@@ -11,9 +11,8 @@ export default defineConfig({
     globals: true,
     setupFiles: ['./vitest.setup.js', './src/client/testSetup.js'],
     environment: 'node',
-    environmentMatchGlobs: [
-      ['src/client/**', 'jsdom'],
-    ],
+    environmentMatchGlobs: [['src/client/**', 'jsdom']],
+    fileParallelism: false,
   },
   resolve: {
     alias: {

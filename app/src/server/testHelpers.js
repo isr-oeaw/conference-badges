@@ -1,4 +1,4 @@
-import db from '../db.js';
+import db from './db.js';
 
 export function clearDatabase() {
   db.exec('DELETE FROM assets');
