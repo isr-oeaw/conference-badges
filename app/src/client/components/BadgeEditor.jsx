@@ -26,6 +26,11 @@ function fitCanvasToWidth(canvas, container) {
   canvas.requestRenderAll();
 }
 
+function isTextObject(obj) {
+  const type = String(obj?.type || '').toLowerCase();
+  return type === 'i-text' || type === 'itext' || type === 'textbox' || type === 'text';
+}
+
 export default function BadgeEditor({ projectId, designJson, onDesignChange, onSaveStatus }) {
   const canvasRef = useRef(null);
   const wrapRef = useRef(null);
@@ -43,7 +48,7 @@ export default function BadgeEditor({ projectId, designJson, onDesignChange, onS
       return;
     }
     setSelected(obj);
-    if (obj.type === 'i-text' || obj.type === 'IText') {
+    if (isTextObject(obj)) {
       setFontSize(obj.fontSize || 32);
       setFill(obj.fill || '#111111');
       setFontWeight(obj.fontWeight || 'normal');
@@ -131,7 +136,7 @@ export default function BadgeEditor({ projectId, designJson, onDesignChange, onS
   const updateSelectedText = (updates) => {
     const canvas = fabricRef.current;
     const obj = canvas?.getActiveObject();
-    if (!obj || (obj.type !== 'i-text' && obj.type !== 'IText')) return;
+    if (!obj || !isTextObject(obj)) return;
     obj.set(updates);
     canvas.renderAll();
     onDesignChange?.(serializeDesign(canvas));
@@ -199,7 +204,7 @@ export default function BadgeEditor({ projectId, designJson, onDesignChange, onS
     }
   };
 
-  const isTextSelected = selected && (selected.type === 'i-text' || selected.type === 'IText');
+  const isTextSelected = selected && isTextObject(selected);
   const canDelete = selected && !selected.dataRole;
 
   return (

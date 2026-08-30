@@ -13,6 +13,7 @@ import {
   BADGE_HEIGHT,
 } from './constants.js';
 import { applyParticipantToDesign, getObjectRole } from './designRoles.js';
+import { wrapRoleObjectText } from './wrapText.js';
 
 async function renderBadgePng(designJson, participant) {
   const canvasEl = document.createElement('canvas');
@@ -26,11 +27,10 @@ async function renderBadgePng(designJson, participant) {
 
   for (const obj of canvas.getObjects()) {
     const role = getObjectRole(obj);
-    if (role === 'name') {
-      obj.set('text', participant.name || '');
-    }
-    if (role === 'institution') {
-      obj.set('text', participant.institution || '');
+    if (role === 'name' || role === 'institution') {
+      wrapRoleObjectText(obj, role === 'name' ? participant.name : participant.institution);
+      obj.initDimensions?.();
+      obj.setCoords?.();
     }
   }
 

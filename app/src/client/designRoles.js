@@ -1,3 +1,5 @@
+import { wrapRoleObjectText } from './wrapText.js';
+
 export function getObjectRole(obj) {
   return obj?.dataRole || obj?.data?.dataRole || obj?.data?.role || null;
 }
@@ -12,7 +14,7 @@ export function applyParticipantToDesign(designJson, participant) {
       target = objects.find((obj) => (obj.text || '') === fallbackText);
     }
     if (target) {
-      target.text = value || '';
+      wrapRoleObjectText(target, value || '');
       if (!getObjectRole(target)) {
         target.dataRole = role;
       }
