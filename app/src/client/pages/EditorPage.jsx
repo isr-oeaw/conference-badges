@@ -13,6 +13,7 @@ export default function EditorPage() {
   const [saveStatus, setSaveStatus] = useState('');
   const [saving, setSaving] = useState(false);
   const designRef = useRef(null);
+  const editorRef = useRef(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -48,9 +49,13 @@ export default function EditorPage() {
     setSaving(true);
     setSaveStatus('Saving…');
     try {
+      const design = editorRef.current?.getDesign() || designRef.current;
+      if (!design || typeof design !== 'object') {
+        throw new Error('Nothing to save yet. Wait for the editor to load.');
+      }
       const updated = await api.updateProject(project.id, {
         name: project.name,
-        design_json: designRef.current,
+        design_json: design,
       });
       setProject(updated);
       setCurrentDesign(updated.design_json);
@@ -147,6 +152,7 @@ export default function EditorPage() {
       </header>
 
       <BadgeEditor
+        ref={editorRef}
         projectId={project.id}
         designJson={project.design_json}
         onDesignChange={handleDesignChange}

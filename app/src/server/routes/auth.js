@@ -15,13 +15,16 @@ import { getSessionCookieOptions } from '../middleware.js';
 
 const router = Router();
 
-const linkLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 10,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { error: 'Too many login attempts. Please try again later.' },
-});
+const linkLimiter =
+  process.env.NODE_ENV === 'test'
+    ? (_req, _res, next) => next()
+    : rateLimit({
+        windowMs: 15 * 60 * 1000,
+        max: 10,
+        standardHeaders: true,
+        legacyHeaders: false,
+        message: { error: 'Too many login attempts. Please try again later.' },
+      });
 
 router.post('/request-link', linkLimiter, async (req, res) => {
   const email = (req.body.email || '').trim().toLowerCase();

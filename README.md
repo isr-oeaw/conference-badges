@@ -47,6 +47,16 @@ npm run dev
 
 Set `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, and `SMTP_FROM` in `.env` so login emails can be sent. Use port `587` with `SMTP_SECURE=false` (STARTTLS) or port `465` with `SMTP_SECURE=true`.
 
+## Tests
+
+```bash
+cd app
+npm install
+npm test
+```
+
+Watch mode: `npm run test:watch`
+
 ## Environment
 
 See [.env.example](.env.example).

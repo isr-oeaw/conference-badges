@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useCallback, useImperativeHandle, forwardRef } from 'react';
 import { Canvas, IText, FabricImage } from 'fabric';
 import { BADGE_WIDTH, BADGE_HEIGHT } from '../constants.js';
 import { api } from '../api.js';
@@ -31,7 +31,10 @@ function isTextObject(obj) {
   return type === 'i-text' || type === 'itext' || type === 'textbox' || type === 'text';
 }
 
-export default function BadgeEditor({ projectId, designJson, onDesignChange, onSaveStatus }) {
+export default forwardRef(function BadgeEditor(
+  { projectId, designJson, onDesignChange, onSaveStatus },
+  ref
+) {
   const canvasRef = useRef(null);
   const wrapRef = useRef(null);
   const fabricRef = useRef(null);
@@ -62,9 +65,7 @@ export default function BadgeEditor({ projectId, designJson, onDesignChange, onS
     return serializeDesign(canvas);
   }, [designJson]);
 
-  useEffect(() => {
-    onDesignChange?.(getDesignJson);
-  }, [selected, onDesignChange, getDesignJson]);
+  useImperativeHandle(ref, () => ({ getDesign: getDesignJson }), [getDesignJson]);
 
   useEffect(() => {
     const el = canvasRef.current;
@@ -105,6 +106,8 @@ export default function BadgeEditor({ projectId, designJson, onDesignChange, onS
     canvas.on('selection:updated', handleSelection);
     canvas.on('selection:cleared', () => syncSelection(null));
     canvas.on('object:modified', emitDesign);
+    canvas.on('object:added', emitDesign);
+    canvas.on('text:changed', emitDesign);
     canvas.on('object:removed', protectRoleObjects);
 
     document.addEventListener('keydown', handleKeyDown);
@@ -295,6 +298,6 @@ export default function BadgeEditor({ projectId, designJson, onDesignChange, onS
       </p>
     </div>
   );
-}
+});
 
 export { BADGE_WIDTH, BADGE_HEIGHT };
